@@ -625,7 +625,6 @@ class CGRN(object):
                     print(log_format % (ei, bid, total_batches, passed,  batch_d_loss, batch_g_loss, cheat_loss, cont_loss, l1_loss))
                 summary_writer.add_summary(g_summary, counter)
 
-
                 if counter % checkpoint_steps == 0:
                     print("Checkpoint: save checkpoint step %d" % counter)
                     self.checkpoint(saver, counter)
