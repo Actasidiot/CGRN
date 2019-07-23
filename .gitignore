@@ -1,0 +1,4 @@
+cat.c
+pretrained_vgg/vgg16_weights.npz
+experiments/IIIT5k
+*.pyc
