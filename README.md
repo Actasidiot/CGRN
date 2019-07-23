@@ -10,7 +10,8 @@ Download the datasets and pretrained VGG model used in our experiments in this l
 After downloading these files, put 'vgg16_weights.npz' under 'pretrained_vgg', and put 'IIIT5k' and 'ICDAR03' folders under 'data'.
 
 # Requirement
-`` Tensorflow
+- Python 2.7
+- Tensorflow >= 1.0.1
 
 # Train
 To start training, run the following command:
@@ -34,9 +35,9 @@ python test.py --test_obj=./experiments/IIIT5k/data/test.obj
 To train CGRN with your own data, you need to papare the images as the following format:
 ![image sample](training_sample.png)
 
-where a scene character image is concatenated with glyph images of different fonts alongside the width direction.
+where a scene character image is concatenated with glyph images of different fonts along the width direction.
 
-Name the images as 'fontclasses_charclass_imgname' (e.g., 0123_0_BadImag-img037-00009.png), where '0123' denotes that the font class of these glyph images are 0,1,2,3.
+Name the images as 'fontclasses_charclass_imgname' (e.g., 0123_0_BadImag-img037-00009.png), where '0123' denotes that the font classes of these glyph images are 0,1,2,3, '0' denotes that the char class of this image is 0 (i.e., a).
 
 Putting all your images into a directory, and run:
 ```sh
@@ -46,7 +47,7 @@ python package.py --dir=image_directory
 ```
 to pickle the images and their corresponding labels into binary format.
 
-# Some details about the experiments
+# Some details about the implementation
 - Recently we find that the training process becomes more stable if we randomly picking glyph image of one font to generate in each step.
 So we finally adopt this strategy instead of generating glyph images of all fonts in a row, which was introduced in our paper.
 - During each step, we first optimize the discriminator once, then optimize the geneator twice, which is helpful for the convergence of the whole model.
