@@ -27,6 +27,26 @@ python test.py --test_obj=./experiments/IIIT5k/data/test.obj
                --model_dir=./experiments/IIIT5k/checkpoint/experiment_0_batch_128  
                --fontclass_num=4 --batch_size=256 --charclass_num=62 --use_stn=0 --use_bn=1 --gpu_id=9
 ```
+
+# Prepare your own data
+To train CGRN on your own data, you need to papare the images as the following format:
+![image sample](training_sample.png)
+Name the image as  and run:
+```sh
+python package.py --dir=image_directories
+                  --save_dir=binary_save_directory
+                  --split_ratio=[0,1]
+```
 # Citation
 
 If you find this project helpful for your research, please cite the following paper:
+```
+@article{wang2019boosting,
+  title={Boosting scene character recognition by learning canonical forms of glyphs},
+  author={Wang, Yizhi and Lian, Zhouhui and Tang, Yingmin and Xiao, Jianguo},
+  journal={International Journal on Document Analysis and Recognition (IJDAR)},
+  pages={1--11},
+  year={2019},
+  publisher={Springer}
+}
+```

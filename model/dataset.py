@@ -76,9 +76,7 @@ def get_batch_iter(examples, batch_size, fontclass_num, augment):
             img_names = []
             processed = []
             for e in batch:
-                #shuffled_order = range(fontclass_num)
                 random_idx = random.randint(0,fontclass_num-1)
-                #random.shuffle(shuffled_order)
                 font_labels.append(label_process(e[0],random_idx))
                 char_labels.append(e[1])
                 img_names.append(e[2])
