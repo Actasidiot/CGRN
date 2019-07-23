@@ -7,11 +7,13 @@ This is the code of our paper 'Boosting scene character recognition by learning 
 # Datasets and pretrained VGG model
 
 Download the datasets and pretrained VGG model used in our experiments in this link.
-After download these files, put 'vgg16_weights.npz' under 'pretrained_vgg'.
-Put 'IIIT5k' and 'ICDAR03' folders under 'data'.
+After downloading these files, put 'vgg16_weights.npz' under 'pretrained_vgg', and put 'IIIT5k' and 'ICDAR03' folders under 'data'.
+
+# Requirement
+`` Tensorflow
 
 # Train
-To start training run the following command:
+To start training, run the following command:
 
 ```sh
 python train.py --experiment_dir=./experiments/IIIT5k --experiment_id=0  --batch_size=128   
@@ -21,32 +23,34 @@ python train.py --experiment_dir=./experiments/IIIT5k --experiment_id=0  --batch
 ```
 
 # Test on the fly
-During the training, you can run a separate program to repeatedly evaluates the produced checkpoints.
+During the training, you can run a separate program to repeatedly evaluates the produced checkpoints:
 ```sh
 python test.py --test_obj=./experiments/IIIT5k/data/test.obj 
                --model_dir=./experiments/IIIT5k/checkpoint/experiment_0_batch_128  
                --fontclass_num=4 --batch_size=256 --charclass_num=62 --use_stn=0 --use_bn=1 --gpu_id=9
 ```
 
-# Training your own data
-To train CGRN on your own data, you need to papare the images as the following format:
+# Train with your own data
+To train CGRN with your own data, you need to papare the images as the following format:
 ![image sample](training_sample.png)
 
 where a scene character image is concatenated with glyph images of different fonts alongside the width direction.
-Name the images as 'fontclasses_charclass_imgname' (e.g., 0-1-2-3_0_BadImag-img037-00009.png).
-After preparing all images into a folder, run:
+
+Name the images as 'fontclasses_charclass_imgname' (e.g., 0123_0_BadImag-img037-00009.png), where '0123' denotes that the font class of these glyph images are 0,1,2,3.
+
+Putting all your images into a directory, and run:
 ```sh
-python package.py --dir=image_directories
+python package.py --dir=image_directory
                   --save_dir=binary_save_directory
                   --split_ratio=[0,1]
 ```
 to pickle the images and their corresponding labels into binary format.
 
-# Some Details about the code
-- In our recent experiments, we find that the training process becomes more stable if we randomly picking glyph image of one font to generate in each step.
-So we finally adopt this strategy instead of generating glyph images of all fonts in a row, which is introduced in our paper.
-- When optimizing 
-- The learning rate markedly affect the recognition accuracy. Emprically, we find 0.0001 and 0.0002 are the best learning rates for IIIT5k and ICDAR03, respectively.
+# Some details about the experiments
+- Recently we find that the training process becomes more stable if we randomly picking glyph image of one font to generate in each step.
+So we finally adopt this strategy instead of generating glyph images of all fonts in a row, which was introduced in our paper.
+- During each step, we first optimize the discriminator once, then optimize the geneator twice, which is helpful for the convergence of the whole model.
+- The learning rate markedly affects the recognition accuracy. Emprically, we find 0.0001 and 0.0002 are the best learning rates for IIIT5k and ICDAR03, respectively.
 
 # Citation
 
