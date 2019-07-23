@@ -2,8 +2,7 @@
 
 # Introduction
 
-This is the code of our paper 'Boosting scene character recognition by learning canonical forms of glyphs' accepted by IJDAR-ICDAR Journal Track. The paper can be found here http://arxiv.org/abs/1907.05577 .
-
+This is the code of our paper 'Boosting scene character recognition by learning canonical forms of glyphs' accepted by IJDAR-ICDAR Journal Track. The paper can be found here http://arxiv.org/abs/1907.05577.
 # Datasets and pretrained VGG model
 
 Download the datasets and pretrained VGG model used in our experiments in this link.
