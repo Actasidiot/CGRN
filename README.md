@@ -1,11 +1,16 @@
 # CGRN: Character Generation and Recognition Network
 
-# Introcution
+# Introduction
 
 This is the code of our paper 'Boosting scene character recognition by learning canonical forms of glyphs' accepted by IJDAR-ICDAR Journal Track. The paper can be found here http://arxiv.org/abs/1907.05577 .
 
 # Datasets and pretrained VGG model
-To download the datasets and pretrained VGG model used in our experiments
+
+Download the datasets and pretrained VGG model used in our experiments in this link.
+After download these files, 
+Put 'vgg16_weights.npz' under 'pretrained_vgg'.
+Put 'IIIT5k' and 'ICDAR03' under 'data'.
+
 # Train
 To start training run the following command:
 
