@@ -3,13 +3,13 @@
 # Introduction
 
 This is the code of our paper 'Boosting scene character recognition by learning canonical forms of glyphs' accepted by IJDAR-ICDAR Journal Track. The paper can be found here http://arxiv.org/abs/1907.05577.
+![network arch](network_arch.jpg)
 
 # Datasets and pretrained VGG model
 
-Download the datasets and pretrained VGG model used in our experiments in this link：
-https://drive.google.com/open?id=1lVgYBIS48poHGprbYNwdXNwTjyApCcfi
+Download the datasets and pretrained VGG model used in our experiments in this link: https://drive.google.com/open?id=1lVgYBIS48poHGprbYNwdXNwTjyApCcfi
 
-After downloading these files, put 'vgg16_weights.npz' under 'pretrained_vgg', and put 'IIIT5k' and 'ICDAR03' folders under 'data'.
+After downloading these files, put 'vgg16_weights.npz' under 'pretrained_vgg', and put 'IIIT5k' and 'ICDAR03' folders under 'experiments'.
 
 # Requirement
 - Python 2.7
@@ -30,11 +30,11 @@ During the training, you can run a separate program to repeatedly evaluates the 
 ```sh
 python test.py --test_obj=./experiments/IIIT5k/data/test.obj 
                --model_dir=./experiments/IIIT5k/checkpoint/experiment_0_batch_128  
-               --fontclass_num=4 --batch_size=256 --charclass_num=62 --use_stn=0 --use_bn=1 --gpu_id=9
+               --fontclass_num=4 --batch_size=256 --charclass_num=62 --use_bn=1 --gpu_id=9
 ```
 
 # Train with your own data
-To train CGRN with your own data, you need to papare the images as the following format:
+To train CGRN with your own data, you need to prepare the images as the following format:
 ![image sample](training_sample.png)
 
 where a scene character image is concatenated with glyph images of different fonts along the width direction.
@@ -50,7 +50,7 @@ python package.py --dir=image_directory
 to pickle the images and their corresponding labels into binary format.
 
 # Some details about the implementation
-- Recently we find that the training process becomes more stable if we randomly pick glyph image of one font to generate in each step.
+- Recently we find that the training process will become more stable if we generate glyph image of one randomly picked font tin each step.
 So we finally adopt this strategy instead of generating glyph images of all fonts in a row, which was introduced in our paper.
 - During each step, we first optimize the discriminator once, then optimize the geneator twice, which is helpful for the convergence of the whole model.
 - The learning rate markedly affects the recognition accuracy. Empirically, we find 0.0001 and 0.0002 are the best learning rates for IIIT5k and ICDAR03, respectively.

@@ -24,7 +24,7 @@ SummaryHandle = namedtuple("SummaryHandle", ["g_merged"])
 class CGRN(object):
     def __init__(self, experiment_dir=None, experiment_id=0, batch_size=16, fontclass_num = 4, input_width=64, output_width=64,
                  generator_dim=64, discriminator_dim=64, L1_penalty=100, Lcont_penalty=100,
-                 embedding_dim=128, charclass_num=62, input_filters=3, output_filters=3, use_stn = 1, use_bn = 0):
+                 embedding_dim=128, charclass_num=62, input_filters=3, output_filters=3, use_bn = 1):
         self.experiment_dir = experiment_dir
         self.experiment_id = experiment_id
         self.batch_size = batch_size
@@ -268,13 +268,12 @@ class CGRN(object):
                 tf.get_variable_scope().reuse_variables()
 
             s = self.output_width
-            s2, s4, s8, s16, s32, s64, s128 = int(s / 2), int(s / 4), int(s / 8), int(s / 16), int(s / 32), int(
-                s / 64), int(s / 128)
+            s2, s4, s8, s16, s32 = int(s / 2), int(s / 4), int(s / 8), int(s / 16), int(s / 32)
 
             def decode_layer(x, output_width, output_filters, layer, enc_layer, dropout=False, do_concat = True):
                 dec = deconv2d(tf.nn.relu(x), [self.batch_size, output_width,
                                                output_width, output_filters], scope="g_d%d_deconv" % layer)
-                if layer != 8:
+                if layer != 6:
                     # IMPORTANT: normalization for last layer
                     # Very important, otherwise GAN is unstable
                     # Trying conditional instance normalization to
@@ -290,13 +289,13 @@ class CGRN(object):
                     dec = tf.concat([dec, enc_layer], 3)
                 return dec
 
-            d3 = decode_layer(encoded, s32, self.generator_dim * 8, layer=3, dropout=is_training, enc_layer=None, do_concat=False)
-            d4 = decode_layer(d3, s16, self.generator_dim * 8, layer=4,dropout=is_training,enc_layer=encoding_layers["p4"])
-            d5 = decode_layer(d4, s8, self.generator_dim * 4, layer=5, dropout=is_training,enc_layer=encoding_layers["p3"])
-            d6 = decode_layer(d5, s4, self.generator_dim * 2, layer=6,enc_layer=encoding_layers["p2"])
-            d7 = decode_layer(d6, s2, self.generator_dim, layer=7, enc_layer=encoding_layers["p1"])
-            d8 = decode_layer(d7, s, self.output_filters, layer=8, enc_layer=None, do_concat=False)
-            output = tf.nn.tanh(d8)  # scale to (-1, 1)
+            d1 = decode_layer(encoded, s32, self.generator_dim * 8, layer=1, dropout=is_training, enc_layer=None, do_concat=False)
+            d2 = decode_layer(d1, s16, self.generator_dim * 8, layer=2,dropout=is_training,enc_layer=encoding_layers["p4"])
+            d3 = decode_layer(d2, s8, self.generator_dim * 4, layer=3, dropout=is_training,enc_layer=encoding_layers["p3"])
+            d4 = decode_layer(d3, s4, self.generator_dim * 2, layer=4,enc_layer=encoding_layers["p2"])
+            d5 = decode_layer(d4, s2, self.generator_dim, layer=5, enc_layer=encoding_layers["p1"])
+            d6 = decode_layer(d5, s, self.output_filters, layer=6, enc_layer=None, do_concat=False)
+            output = tf.nn.tanh(d6)  # scale to (-1, 1)
             return output
 
     def generator(self, encoded_feat, encoding_layers, embeddings, embedding_ids, inst_norm, is_training, reuse=False):
@@ -439,7 +438,11 @@ class CGRN(object):
         t_vars = tf.trainable_variables()
         dis_vars = [var for var in t_vars if ('discriminator' in var.name)]
         enc_clf_dec_vars = [var for var in t_vars if ('encoder' in var.name) or('classifier' in var.name) or ('decoder' in var.name)]
+        
         enc_clf_vars = [var for var in t_vars if ('encoder' in var.name) or ('classifier' in var.name)]
+        #for var in enc_clf_dec_vars:
+        #  print(var)
+        #input()
         return enc_clf_vars, enc_clf_dec_vars, dis_vars
 
     def retrieve_global_vars(self):
@@ -508,8 +511,8 @@ class CGRN(object):
             char_labels_np = np.array(char_labels)
             font_labels = np.array(font_labels)
             if bid == 0:
-                outim = Image.new("RGB",(self.fontclass_num * self.output_width, self.batch_size * self.output_width))
-                outim_real_target = Image.new("RGB",(self.fontclass_num * self.output_width, self.batch_size * self.output_width))
+                outim = Image.new("RGB",(self.output_width, self.batch_size * self.output_width))
+                outim_real_target = Image.new("RGB",( self.output_width, self.batch_size * self.output_width))
                 fake_images_merge = merge(scale_back(fake_B), [self.batch_size, 1])
                 real_images_merge = merge(scale_back(real_B), [self.batch_size, 1])
                 real_A_merge = merge(scale_back(real_A), [self.batch_size, 1])
@@ -519,7 +522,6 @@ class CGRN(object):
                 outim_real_target.paste(real_images_merge_, (0, 0, self.output_width , self.output_width * self.batch_size))
                 outim.save(model_dir + '/' + 'sample-fake.jpg')
                 outim_real_target.save(model_dir + '/' + 'sample-real.jpg')
-                np.savetxt(model_dir + '/' + 'char_label.txt', char_labels_np)
                 Image.fromarray(np.uint8(real_A_merge)).save(model_dir + '/' + 'sample-input.jpg')
             
             for img_id, img_name in enumerate(img_names):
@@ -533,7 +535,6 @@ class CGRN(object):
 
         print('testing result:')
         print(float(correct_prediction_cnt) / len(dict_imgname_logits))
-        #print('contant loss %.8f' % (total_cont_loss))
 
     def train(self, lr=0.0001, epoch=100, schedule=10, resume=True, sample_steps=50, checkpoint_steps=152):
         enc_clf_vars, enc_clf_dec_vars, dis_vars = self.retrieve_trainable_vars()
