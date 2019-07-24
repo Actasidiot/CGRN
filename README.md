@@ -29,7 +29,7 @@ During the training, you can run a separate program to repeatedly evaluates the 
 ```sh
 python test.py --test_obj=./experiments/IIIT5k/data/test.obj \
                --model_dir=./experiments/IIIT5k/checkpoint/experiment_0_batch_128  \
-               --fontclass_num=4 --batch_size=256 --charclass_num=62 --use_bn=1 --gpu_id=9
+               --fontclass_num=4 --batch_size=256 --charclass_num=62 --use_bn=1 --gpu_id=1
 ```
 In our paper, we reported the best recognition accuracy of all evaluated checkpoints.
 
@@ -43,8 +43,8 @@ Name the images as 'fontclasses_charclass_imgname' (e.g., 0123_0_BadImag-img037-
 
 Putting all your images into a directory, and run:
 ```sh
-python package.py --dir=image_directory
-                  --save_dir=binary_save_directory
+python package.py --dir=image_directory \
+                  --save_dir=binary_save_directory \
                   --split_ratio=[0,1]
 ```
 to pickle the images and their corresponding labels into binary format.
@@ -54,7 +54,7 @@ to pickle the images and their corresponding labels into binary format.
 So we finally adopt this strategy instead of generating glyph images of all fonts in a row, which was introduced in our paper.
 - During each step, we first optimize the discriminator once, then optimize the geneator twice, which is helpful for the convergence of the whole model.
 - The learning rate markedly affects the recognition accuracy. Empirically, we find 0.0001 and 0.0002 are the best learning rates for IIIT5k and ICDAR03, respectively.
-- The font embeddings were randomly initialized and remains none-trainable in our paper. However, some bad initializations may lead CGRN to poor performance. To prevent this situation, font embeddings are added into trainable variables in this code. It will be a very interesting work to investigate the design of font embeddings.
+- The font embeddings were randomly initialized and remained non-trainable in our paper. However, some bad initializations may lead CGRN to poor performance. To prevent this situation, font embeddings are added into trainable variables in this code. It will be a very interesting work to investigate the design of font embeddings.
 
 # Citation
 
