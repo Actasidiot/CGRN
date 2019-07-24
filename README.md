@@ -6,7 +6,9 @@ This is the code of our paper 'Boosting scene character recognition by learning 
 
 # Datasets and pretrained VGG model
 
-Download the datasets and pretrained VGG model used in our experiments in this link.
+Download the datasets and pretrained VGG model used in our experiments in this link：
+https://drive.google.com/open?id=1lVgYBIS48poHGprbYNwdXNwTjyApCcfi
+
 After downloading these files, put 'vgg16_weights.npz' under 'pretrained_vgg', and put 'IIIT5k' and 'ICDAR03' folders under 'data'.
 
 # Requirement
@@ -48,10 +50,10 @@ python package.py --dir=image_directory
 to pickle the images and their corresponding labels into binary format.
 
 # Some details about the implementation
-- Recently we find that the training process becomes more stable if we randomly picking glyph image of one font to generate in each step.
+- Recently we find that the training process becomes more stable if we randomly pick glyph image of one font to generate in each step.
 So we finally adopt this strategy instead of generating glyph images of all fonts in a row, which was introduced in our paper.
 - During each step, we first optimize the discriminator once, then optimize the geneator twice, which is helpful for the convergence of the whole model.
-- The learning rate markedly affects the recognition accuracy. Emprically, we find 0.0001 and 0.0002 are the best learning rates for IIIT5k and ICDAR03, respectively.
+- The learning rate markedly affects the recognition accuracy. Empirically, we find 0.0001 and 0.0002 are the best learning rates for IIIT5k and ICDAR03, respectively.
 
 # Citation
 

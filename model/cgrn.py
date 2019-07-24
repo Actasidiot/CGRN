@@ -335,8 +335,8 @@ class CGRN(object):
         # target images
         real_B = real_data[:, :, :, self.input_filters : self.input_filters + self.output_filters]
         encoded_real_A, encode_layers = self.encoder(real_A, is_training=is_training, reuse=False)
-        embedding = init_embedding(self.fontclass_num, self.embedding_dim)
-
+        #embedding = init_embedding(self.fontclass_num, self.embedding_dim)
+        embedding = init_embedding(self.fontclass_num, self.embedding_dim, scope="decoder/embedding")
         fake_B, embedded = self.generator(encoded_real_A, encode_layers,  embedding, embedding_ids, is_training=is_training, inst_norm=inst_norm, reuse=False)
 
         real_AB = tf.concat([real_A, real_B], 3)
@@ -586,7 +586,7 @@ class CGRN(object):
                                                                char_classes: char_labels,
                                                                learning_rate: current_lr
                                                            })
-                
+                '''
                 # Optimize G
                 _, batch_g_loss = self.sess.run([g_optimizer, loss_handle.g_loss],
                                                 feed_dict={
@@ -596,7 +596,7 @@ class CGRN(object):
                                                     learning_rate: current_lr
                                                 })
                 
-                
+                '''
                 # Optimize G
                 _, batch_g_loss = self.sess.run([g_optimizer, loss_handle.g_loss],
                                                 feed_dict={
