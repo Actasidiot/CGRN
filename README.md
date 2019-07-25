@@ -52,9 +52,9 @@ to pickle the images and their corresponding labels into binary format.
 # Some details about the implementation
 - Recently we find that the training process will be more stable if we generate glyph image of one randomly picked font in each step.
 So we finally adopt this strategy instead of generating glyph images of all fonts in a row, which was introduced in our paper.
-- During each step, we first optimize the discriminator once, then optimize the geneator twice, which is helpful for the convergence of the whole model.
+- During each step, we first optimize the discriminator once, then optimize the generator twice, which is helpful for the convergence of the whole model.
 - The learning rate markedly affects the recognition accuracy. Empirically, we find 0.0001 and 0.0002 are the best learning rates for IIIT5k and ICDAR03, respectively.
-- The font embeddings were randomly initialized and remained non-trainable in our paper. However, some bad initializations may lead CGRN to poor performance. To prevent this situation, font embeddings are added into trainable variables in this code. It will be a very interesting work to investigate the design of font embeddings.
+- The font embeddings were randomly initialized and remained non-trainable in our paper. However, some bad initializations may lead CGRN to poor performance. To prevent this situation, font embeddings are added into trainable variables in this code. It will be very interesting work to investigate the design of font embeddings.
 
 # Citation
 
