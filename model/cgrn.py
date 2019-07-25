@@ -280,7 +280,7 @@ class CGRN(object):
                     # overcome the fact that batch normalization offers
                     # different train/test statistics
                     if inst_norm:
-                        dec = conditional_instance_norm(dec, ids, self.embedding_num, scope="g_d%d_inst_norm" % layer)
+                        dec = conditional_instance_norm(dec, ids, self.fontclass_num, scope="g_d%d_inst_norm" % layer)
                     else:
                         dec = batch_norm(dec, is_training, scope="g_d%d_bn" % layer)
                 if dropout:
@@ -440,9 +440,6 @@ class CGRN(object):
         enc_clf_dec_vars = [var for var in t_vars if ('encoder' in var.name) or('classifier' in var.name) or ('decoder' in var.name)]
         
         enc_clf_vars = [var for var in t_vars if ('encoder' in var.name) or ('classifier' in var.name)]
-        #for var in enc_clf_dec_vars:
-        #  print(var)
-        #input()
         return enc_clf_vars, enc_clf_dec_vars, dis_vars
 
     def retrieve_global_vars(self):
@@ -587,18 +584,8 @@ class CGRN(object):
                                                                char_classes: char_labels,
                                                                learning_rate: current_lr
                                                            })
-                '''
-                # Optimize G
-                _, batch_g_loss = self.sess.run([g_optimizer, loss_handle.g_loss],
-                                                feed_dict={
-                                                    real_data: batch_images,
-                                                    embedding_ids: font_labels,
-                                                    char_classes: char_labels,
-                                                    learning_rate: current_lr
-                                                })
-                
-                '''
-                # Optimize G
+
+                # Optimize G twice
                 _, batch_g_loss = self.sess.run([g_optimizer, loss_handle.g_loss],
                                                 feed_dict={
                                                     real_data: batch_images,

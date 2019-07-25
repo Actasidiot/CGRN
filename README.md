@@ -25,7 +25,7 @@ python train.py --experiment_dir=./experiments/IIIT5k --experiment_id=0  --batch
 ```
 
 # Test on the fly
-During the training, you can run a separate program to repeatedly evaluates the produced checkpoints:
+During the training, you can run a separate program to repeatedly evaluate the produced checkpoints:
 ```sh
 python test.py --test_obj=./experiments/IIIT5k/data/test.obj \
                --model_dir=./experiments/IIIT5k/checkpoint/experiment_0_batch_128  \
